@@ -2,7 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
+use App\Todo;
 
 /**
  * En esta clase deben implementar los metodos vacios de acuerdo a lo
@@ -22,7 +24,8 @@ class TodoController extends Controller
      */
     public function index()
     {
-        // TODO
+        $tasks = Todo::orderBy('created_at', 'DESC')->get();
+        return $tasks;
     }
 
     /**
@@ -35,7 +38,24 @@ class TodoController extends Controller
      */
     public function store(Request $request)
     {
-        // TODO
+        /**
+         * Se realiza la validación de los datos recibidos (text, done).
+         */
+        $this->validate($request,[
+            'text' => ['required'],
+            'done' => ['required','boolean']
+
+        ]);
+
+        /**
+         * Se realiza el insert a la BDD.
+         */
+        $task = new Todo;
+        $task->text = $request->text;
+        $task->done = $request->done;
+        $task->save();
+
+        return $task;
     }
 
     /**
@@ -48,7 +68,28 @@ class TodoController extends Controller
      */
     public function update($id, Request $request)
     {
-        // TODO
+        /**
+         * Se realiza la validación de los datos recibidos (id).
+         */
+        $this->validate($request,[
+            'id' => 'required'
+        ]);
+
+        $task = Todo::find($id);
+
+        /**
+         * Se realiza el update del done inverso del booleano
+         */
+        if( $task->done == 0 )
+        {
+            $task->done = 1;
+        } else {
+            $task->done = 0;
+        }
+
+        $task->save();
+
+        return $task;
     }
 
     /**
@@ -60,6 +101,13 @@ class TodoController extends Controller
      */
     public function delete($id)
     {
-        // TODO
+        try {
+            $task = Todo::findOrFail($id)->delete();
+            $response = '{"response" : 200}';
+        } catch (ModelNotFoundException $exception ) {
+            $response = '{"response" : 400}';
+        }
+
+        return $response;
     }
 }
