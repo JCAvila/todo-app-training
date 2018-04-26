@@ -7,6 +7,8 @@
 
 require('./bootstrap');
 
+import { store } from './components/store';
+
 window.Vue = require('vue');
 
 /**
@@ -17,5 +19,6 @@ window.Vue = require('vue');
 Vue.component('todo-component', require('./components/Todo.vue'));
 
 const app = new Vue({
-    el: '#app'
+    el: '#app',
+    store
 });

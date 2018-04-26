@@ -1,17 +1,17 @@
 <template>
     <div>
-        <td class="is-fullwidth" style="cursor: pointer" :class="{ 'is-done': done }" @click="$emit('toggleDone', id)">
+        <td class="is-fullwidth" style="cursor: pointer" :class="{ 'is-done': done }" @click="toogleDone(id)">
             {{ text }}
         </td>
         <td class="is-narrow">
-            <a class="button is-danger is-small" @click.prevent="$emit('removeTodo', id)">Eliminar</a>
+            <a class="button is-danger is-small" @click.prevent="removeTodo(id)">Eliminar</a>
         </td>
     </div>
 </template>
 
 <script>
     export default{
-        props:{
+        props: {
             text: {
                 type: String,
                 required: true,
@@ -23,6 +23,14 @@
             done: {
                 type: Boolean,
                 required: true,
+            }
+        },
+        methods: {
+            removeTodo (id) {
+                this.$store.dispatch('removeTodo',id);
+            },
+            toogleDone (id) {
+                this.$store.dispatch('toogleDone',id);
             }
         }
     }
